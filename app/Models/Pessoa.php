@@ -21,9 +21,4 @@ class Pessoa extends Model
         'email',
     ];
 
-    protected $dates = ['data_nascimento'];
-    public function setDataNascimentoAttribute($value){
-        $this->attributes['data_nascimento'] = Carbon::createFromFormat('d/m/Y', $value)->format('Y-m-d');
-    }
-
 }

@@ -1,52 +1,41 @@
-
-<template>
-    <v-container>
-        <v-card class="pa-5">
-            <v-form @submit.prevent="submit">
-                <v-text-field label="Nome" v-model="form.nome" required></v-text-field>
-                <v-text-field label="Data de Nascimento" v-model="form.data_nascimento" required></v-text-field>
-                <v-text-field label="CPF" v-model="form.cpf" required></v-text-field>
-
-                <v-select
-                    label="Sexo"
-                    v-model="form.sexo"
-                    :items="['Masculino', 'Feminino']"
-                    required
-                ></v-select>
-                
-                <v-text-field label="Telefone" v-model="form.telefone"></v-text-field>
-                <v-text-field label="E-mail" v-model="form.email" type="email" required></v-text-field>
-
-                <v-btn type="submit" color="primary">Cadastrar</v-btn>
-            </v-form>
-        </v-card>
-
-        <v-card class="mt-5">
-            <v-list>
-                <v-list-item v-for="pessoa in pessoas" :key="pessoa.id">
-                    {{ pessoa.nome }} - {{ pessoa.email }}
-                </v-list-item>
-            </v-list>
-        </v-card>
-    </v-container>
-</template>
-
 <script setup>
-import { ref } from 'vue';
-import { router } from '@inertiajs/vue3'
+import { Head, Link } from '@inertiajs/vue3';
 
 defineProps({ pessoas: Array });
 
-const form = ref({
-    nome: '',
-    data_nascimento: '',
-    cpf: '',
-    sexo: '',
-    telefone: '',
-    email: ''
-});
-
-const submit = () => {
-    router.post('/pessoas', form.value);
-};
+const formatDate = (date) => new Date(date).toLocaleDateString('pt-BR');
 </script>
+
+<template>
+    <Head title="Lista de Pessoas" />
+    <div class="p-6 bg-white rounded-lg shadow-md">
+        <h1 class="text-2xl font-bold mb-4">Lista de Pessoas</h1>
+        <Link href="/pessoas/create" class="bg-blue-500 text-white px-4 py-2 rounded-md mb-4 inline-block">
+            Cadastrar Pessoa
+        </Link>
+        <table class="w-full border-collapse mt-4">
+            <thead>
+                <tr class="bg-gray-200">
+                    <th class="border p-2">Nome</th>
+                    <th class="border p-2">CPF</th>
+                    <th class="border p-2">Email</th>
+                    <th class="border p-2">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="pessoa in pessoas" :key="pessoa.id" class="border-b">
+                    <td class="border p-2">{{ pessoa.nome }}</td>
+                    <td class="border p-2">{{ pessoa.cpf }}</td>
+                    <td class="border p-2">{{ pessoa.email }}</td>
+                    <td class="border p-2">
+                        <Link :href="`/pessoas/${pessoa.id}/edit`" class="text-blue-500 mr-2">Editar</Link>
+                        <form :action="`/pessoas/${pessoa.id}`" method="POST" class="inline">
+                            <input type="hidden" name="_method" value="DELETE" />
+                            <button type="submit" class="text-red-500">Excluir</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</template>

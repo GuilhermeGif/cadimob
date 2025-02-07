@@ -34,10 +34,6 @@ class PessoaController extends Controller
             'telefone' => 'nullable|string|max:20',
             'email' => 'required|email|unique:pessoas,email',
         ]);
-
-        // Convertendo a data antes de salvar
-        $dataNascimento = Carbon::createFromFormat('d/m/Y', $request->data_nascimento)->format('Y-m-d');
-        
         
         Pessoa::create($request->all());
 
