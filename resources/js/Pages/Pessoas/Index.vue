@@ -7,7 +7,12 @@ const formatDate = (date) => new Date(date).toLocaleDateString('pt-BR');
 
 const deletePessoa = (id) => {
     if(confirm('Tem certeza que deseja excluir?')) {
-        router.delete(route('pessoas.destroy', id));
+        router.delete(route('pessoas.destroy', id)), {
+            preserveScroll: true, //mantem a rolagem na pagina (evita dar pagina expirada quando deleta)
+            onSuccess: () => {
+                alert('Registro excluido com sucesso!')
+            }
+        }
     }
 };
 
@@ -35,10 +40,10 @@ const deletePessoa = (id) => {
                     <td class="border p-2">{{ pessoa.cpf }}</td>
                     <td class="border p-2">{{ pessoa.email }}</td>
                     <td class="border p-2">
-                        <Link :href="`/pessoas/${pessoa.id}/edit`" class="text-blue-500 mr-2">Editar</Link>
+                        <Link :href="`/pessoas/${pessoa.id}/edit`" class="bg-blue-500 text-white px-4 py-3 rounded-md">Editar</Link>
                         <form :action="`/pessoas/${pessoa.id}`" method="POST" class="inline">
                             <input type="hidden" name="_method" value="DELETE" />
-                            <button @click="deletePessoa(pessoa.id)" class="text-red-500">Excluir</button>
+                            <button @click="deletePessoa(pessoa.id)" class="bg-red-500 text-white px-2 py-2 rounded-md">Excluir</button>
                         </form>
                     </td>
                 </tr>

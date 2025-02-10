@@ -27,6 +27,9 @@ Route::middleware('auth')->group(function () {
 
 Route::resource('pessoas', PessoaController::class)->middleware('auth');
 
+Route::get('/pessoas/{id}/edit', [PessoaController::class, 'edit'])->name('pessoas.edit');
+Route::put('/pessoas/{id}', [PessoaController::class, 'update'])->name('pessoas.update');
+
 Route::delete('/pessoas/{id}', [PessoaController::class, 'destroy'])->name('pessoas.destroy');
 
 require __DIR__.'/auth.php';

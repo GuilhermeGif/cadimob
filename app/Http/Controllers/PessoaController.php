@@ -47,9 +47,10 @@ class PessoaController extends Controller
     }
 
     // 📌 FORMULÁRIO DE EDIÇÃO (EDIT)
-    public function edit(Pessoa $pessoa)
+    public function edit($id)
     {
-        return Inertia::render('Pessoas/Edit', compact('pessoa'));
+        $pessoa = Pessoa::findOrFail($id);
+        return Inertia::render('Pessoas/Edit', ['pessoa' => $pessoa]);
     }
 
     // 📌 ATUALIZAR REGISTRO (UPDATE)
