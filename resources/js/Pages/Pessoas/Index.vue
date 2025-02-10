@@ -1,9 +1,16 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
 
 defineProps({ pessoas: Array });
 
 const formatDate = (date) => new Date(date).toLocaleDateString('pt-BR');
+
+const deletePessoa = (id) => {
+    if(confirm('Tem certeza que deseja excluir?')) {
+        router.delete(route('pessoas.destroy', id));
+    }
+};
+
 </script>
 
 <template>
@@ -31,7 +38,7 @@ const formatDate = (date) => new Date(date).toLocaleDateString('pt-BR');
                         <Link :href="`/pessoas/${pessoa.id}/edit`" class="text-blue-500 mr-2">Editar</Link>
                         <form :action="`/pessoas/${pessoa.id}`" method="POST" class="inline">
                             <input type="hidden" name="_method" value="DELETE" />
-                            <button type="submit" class="text-red-500">Excluir</button>
+                            <button @click="deletePessoa(pessoa.id)" class="text-red-500">Excluir</button>
                         </form>
                     </td>
                 </tr>

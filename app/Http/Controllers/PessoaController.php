@@ -70,10 +70,11 @@ class PessoaController extends Controller
     }
 
     // 📌 EXCLUIR REGISTRO (DELETE)
-    public function destroy(Pessoa $pessoa)
+    public function destroy($id)
     {
+        $pessoa = Pessoa::findOrFail($id);
         $pessoa->delete();
 
-        return redirect()->route('pessoas.index')->with('success', 'Pessoa excluída com sucesso!');
+        return response()->json(['message' => 'Registro excluido com sucesso!']);
     }
 }

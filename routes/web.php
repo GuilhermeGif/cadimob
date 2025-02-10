@@ -27,4 +27,6 @@ Route::middleware('auth')->group(function () {
 
 Route::resource('pessoas', PessoaController::class)->middleware('auth');
 
+Route::delete('/pessoas/{id}', [PessoaController::class, 'destroy'])->name('pessoas.destroy');
+
 require __DIR__.'/auth.php';
