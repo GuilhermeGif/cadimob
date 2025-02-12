@@ -76,6 +76,6 @@ class PessoaController extends Controller
         $pessoa = Pessoa::findOrFail($id);
         $pessoa->delete();
 
-        return response()->json(['message' => 'Registro excluido com sucesso!']);
+        return redirect()->route('pessoas.index')->with('success', 'Registro excluido com sucesso!');
     }
 }
