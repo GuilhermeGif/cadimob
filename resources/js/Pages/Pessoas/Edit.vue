@@ -1,34 +1,14 @@
 <template>
-    <div>
-        <form @submit.prevent="submitForm">
-        <div>
-            <label for="nome">Nome</label>
-            <input v-model="form.nome" type="text" required />
-        </div>
-        
-        <div>
-            <label for="data_nascimento">Data de Nascimento</label>
-            <input v-model="form.data_nascimento" type="date" required />
-        </div>
-        
-        <div>
-            <label for="cpf">CPF</label>
-            <input v-model="form.cpf" type="text" required />
-        </div>
-        
-        <div>
-            <label for="sexo">Sexo</label>
-            <select v-model="form.sexo" required>
-            <option value="masculino">Masculino</option>
-            <option value="feminino">Feminino</option>
-            </select>
-        </div>
-        
-        <!-- Outros campos aqui, que são opcionais -->
-        
+    <form @submit.prevent="submitForm">
+        <input v-model="form.nome" type="text" required />
+        <input v-model="form.data_nascimento" type="date" required />
+        <input v-model="form.cpf" type="text" required />
+        <select v-model="form.sexo" required>
+        <option value="Masculino">Masculino</option>
+        <option value="Feminino">Feminino</option>
+        </select>    
         <button type="submit" class="bg-blue-500 text-white px-4 py-4 rounded-md">Salvar</button>
-        </form>
-    </div>
+    </form>
     </template>
     
     <script setup>
@@ -43,6 +23,8 @@
         data_nascimento: props.pessoa.data_nascimento || '',
         cpf: props.pessoa.cpf || '',
         sexo: props.pessoa.sexo || '',
+        telefone: props.pessoa.telefone || '',
+        email: props.pessoa.email || '',
       // outros campos opcionais
 });
 
