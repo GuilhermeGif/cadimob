@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ImovelController;
 use App\Http\Controllers\PessoaController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
@@ -29,7 +30,8 @@ Route::resource('pessoas', PessoaController::class)->middleware('auth');
 
 Route::get('/pessoas/{id}/edit', [PessoaController::class, 'edit'])->name('pessoas.edit');
 Route::put('/pessoas/{id}', [PessoaController::class, 'update'])->name('pessoas.update');
-
 Route::delete('/pessoas/{id}', [PessoaController::class, 'destroy'])->name('pessoas.destroy');
+
+Route::resource('imoveis', ImovelController::class);
 
 require __DIR__.'/auth.php';
