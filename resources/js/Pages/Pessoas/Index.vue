@@ -20,10 +20,12 @@ const deletePessoa = (id) => {
 <template>
     <Layout>
         <div class="p-6 bg-white rounded-lg shadow-md">
-        <h1 class="text-2xl font-bold mb-4">Lista de Pessoas</h1>
-        <Link href="/pessoas/create" class="bg-green-500 text-white px-4 py-2 rounded-md mb-4 inline-block">
-            Cadastrar Pessoa
-        </Link>
+            <div class="flex justify-between items-center mb-4">
+            <h1 class="text-2xl font-bold">Lista de Pessoas</h1>
+            <Link href="/pessoas/create" class="bg-green-500 text-white px-4 py-2 rounded-md mb-4 inline-block">
+                + Cadastrar Pessoa
+            </Link>
+            </div>
         
         <table class="w-full border-collapse mt-4">
             <thead>
@@ -43,7 +45,7 @@ const deletePessoa = (id) => {
                 <td class="border p-2">{{ pessoa.cpf }}</td>
                 <td class="border p-2">{{ formatDate(pessoa.data_nascimento) }}</td>
                 <td class="border p-2">{{ pessoa.sexo }}</td>
-                <td class="border p-2 flex gap-2">
+                <td class="border p-2 flex gap-2 justify-center">
                 <Link :href="`/pessoas/${pessoa.id}/edit`" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition">
                     Editar
                 </Link>
