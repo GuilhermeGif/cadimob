@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useForm } from "@inertiajs/vue3";
-import { defineProps } from "vue";
+import { ref } from "vue";
 
 interface Imovel {
     id: number;
@@ -49,8 +49,84 @@ const submitForm = () => {
 const voltar = () => {
     window.history.back();
 };
+
+const errorMessage = ref("");
+
 </script>
 
 <template>
-    <create :form="form" :submitForm="submitForm" :voltar="voltar" />
+    <v-container>
+        <v-card class="pa-6 rounded-xl shadow-md">
+            <v-card-title class="text-h6 font-bold">Editar Imóvel</v-card-title>
+            <v-card-text>
+                <v-form @submit.prevent="submitForm">
+                    <v-select 
+                        v-model="form.tipo" 
+                        label="Tipo" 
+                        :items="['Terreno', 'Casa', 'Apartamento']" 
+                        required 
+                        outlined 
+                        dense 
+                    />
+                    <v-text-field 
+                        v-model="form.logradouro" 
+                        label="Logradouro" 
+                        required 
+                        outlined 
+                        dense 
+                    />
+                    <v-text-field 
+                        v-model="form.numero" 
+                        label="Número" 
+                        required 
+                        outlined 
+                        dense 
+                    />
+                    <v-text-field 
+                        v-model="form.bairro" 
+                        label="Bairro" 
+                        required 
+                        outlined 
+                        dense 
+                    />
+                    <v-text-field 
+                        v-model="form.complemento" 
+                        label="Complemento" 
+                        outlined 
+                        dense 
+                    />
+                    <v-text-field 
+                        v-model="form.area_terreno" 
+                        label="Área do Terreno (m²)" 
+                        type="number" 
+                        required 
+                        outlined 
+                        dense 
+                    />
+                    <v-text-field 
+                        v-model="form.area_edificacao" 
+                        label="Área da Edificação (m²)" 
+                        type="number" 
+                        outlined 
+                        dense 
+                    />
+                    <v-text-field 
+                        v-model="form.contribuinte_id" 
+                        label="Contribuinte (ID)" 
+                        required 
+                        outlined 
+                        dense 
+                    />
+                    
+                    <v-alert v-if="errorMessage" type="error" class="mt-2">
+                        {{ errorMessage }}
+                    </v-alert>
+                    
+                    <v-btn :loading="form.processing" color="blue" type="submit" class="mt-4 mr-2">
+                        Salvar
+                    </v-btn>
+                </v-form>
+            </v-card-text>
+        </v-card>
+    </v-container>
 </template>
