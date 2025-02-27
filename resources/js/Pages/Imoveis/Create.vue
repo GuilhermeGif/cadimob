@@ -106,10 +106,10 @@ const voltar = () => {
 
             <!-- Botões -->
             <div class="flex justify-between mt-6">
-                <button type="button" @click="voltar" class="px-4 py-2 bg-gray-500 text-white rounded">
+                <button type="button" @click="voltar" class="px-4 py-2 bg-red-500 text-white no-underline transition duration-200 ease-in-out hover:bg-red-700 rounded-md mb-4 inline-block">
                     Cancelar
                 </button>
-                <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded">
+                <button type="submit" class="px-6 py-2 bg-green-500 text-white no-underline transition duration-200 ease-in-out hover:bg-green-700 rounded-md mb-4 inline-block">
                     Cadastrar
                 </button>
             </div>

@@ -36,7 +36,7 @@ class ImovelController extends Controller
 
     public function create()
     {
-        return Inertia::render('Imoveis/Form', [
+        return Inertia::render('Imoveis/Create', [
             'imovel'=> new Imovel(),
             'contribuintes' => Pessoa::all(['id', 'nome']),
         ]);
