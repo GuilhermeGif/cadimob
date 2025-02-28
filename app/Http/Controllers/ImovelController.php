@@ -28,7 +28,7 @@ class ImovelController extends Controller
             'complemento'=> 'nullable|string',
             'contribuinte_id'=> 'required|exists:pessoas,id',
         ]);
-
+        
         Imovel::create($data);
 
         return redirect()->route('imoveis.index')->with('success','Imóvel cadastrado com sucesso!');
@@ -68,8 +68,9 @@ class ImovelController extends Controller
         return redirect()->route('imoveis.index')->with('success', 'Imóvel atualizado com sucesso!');
     }
 
-    public function destroy(Imovel $imovel)
+    public function destroy($id)
     {
+        $imovel = Imovel::findOrFail($id);
         $imovel->delete();
         return redirect()->route('imoveis.index')->with('success', 'Imóvel excluído com sucesso!');
     }
