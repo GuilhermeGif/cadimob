@@ -32,6 +32,11 @@ Route::get('/pessoas/{id}/edit', [PessoaController::class, 'edit'])->name('pesso
 Route::put('/pessoas/{id}', [PessoaController::class, 'update'])->name('pessoas.update');
 Route::delete('/pessoas/{id}', [PessoaController::class, 'destroy'])->name('pessoas.destroy');
 
-Route::resource('imoveis', ImovelController::class);
+Route::resource('imoveis', ImovelController::class)->middleware('auth');
+
+Route::get('/imoveis/{id}/edit', [ImovelController::class, 'edit'])-> name('imoveis.edit');
+Route::put('/imoveis/{id}', [ImovelController::class, 'update'])->name('imoveis.update');
+Route::delete('/imoveis/{id}', [ImovelController::class, 'delete'])->name('imoveis.delete');
+
 
 require __DIR__.'/auth.php';

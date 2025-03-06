@@ -18,7 +18,7 @@ class ImovelController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->validate([
+        $request->validate([
             'tipo'=> 'required|string',
             'area_terreno'=> 'nullable|numeric',
             'area_edificacao'=> 'nullable|numeric',
@@ -29,7 +29,7 @@ class ImovelController extends Controller
             'contribuinte_id'=> 'required|exists:pessoas,id',
         ]);
         
-        Imovel::create($data);
+        Imovel::create($request->all());
 
         return redirect()->route('imoveis.index')->with('success','Imóvel cadastrado com sucesso!');
     }
@@ -42,17 +42,22 @@ class ImovelController extends Controller
         ]);
     }
 
-    public function edit(Imovel $imovel)
+    public function edit($id)
     {
+        $imovel = Imovel::with('contribuinte')->findOrFail($id);
+
+        $contribuintes = Pessoa::all(['id', 'nome']);
+
         return Inertia::render('Imoveis/Edit', [
             'imovel' => $imovel,
-            'contribuintes' => Pessoa::all()
+            'contribuintes' => $contribuintes,
         ]);
     }
 
     public function update(Request $request, Imovel $imovel)
     {
-        $data = $request->validate([
+        dd($imovel);
+        $request->validate([
             'tipo' => 'required|string',
             'area_terreno' => 'nullable|numeric',
             'area_edificacao' => 'nullable|numeric',
@@ -63,7 +68,7 @@ class ImovelController extends Controller
             'contribuinte_id' => 'required|exists:pessoas,id',
         ]);
 
-        $imovel->update($data);
+        $imovel->update($request->all( ));
 
         return redirect()->route('imoveis.index')->with('success', 'Imóvel atualizado com sucesso!');
     }
