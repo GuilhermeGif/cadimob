@@ -52,9 +52,12 @@
                 {{ errorMessage }}
             </v-alert>
             
-            <v-btn :loading="form.processing" color="blue" type="submit" class="mt-4">
+            <button :loading="form.processing" type="submit" class="bg-blue-500 text-white hover:bg-blue-700 px-5 py-2 mr-2 rounded-md justify-between">
                 Salvar
-            </v-btn>
+            </button>
+            <button @click="voltar" class="bg-gray-400 text-white hover:bg-gray-600 px-5 py-2 mr-2 rounded-md justify-between">
+                Voltar
+            </button>
             </v-form>
         </v-card-text>
         </v-card>
@@ -89,5 +92,9 @@
         errorMessage.value = "";
         },
     });
+};
+
+    const voltar = () => {
+        window.history.back();
 };
 </script>

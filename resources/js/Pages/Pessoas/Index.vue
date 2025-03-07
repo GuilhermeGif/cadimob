@@ -2,7 +2,7 @@
 import Layout from '@/Layouts/Layout.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 
-defineProps({ pessoas: Array });
+defineProps({ pessoas: Object });
 
 const formatDate = (date) => new Date(date).toLocaleDateString('pt-BR');
 
@@ -39,7 +39,7 @@ const deletePessoa = (id) => {
             </tr>
             </thead>
             <tbody>
-            <tr v-for="pessoa in pessoas" :key="pessoa.id" class="border-b">
+            <tr v-for="pessoa in pessoas.data" :key="pessoa.id" class="border-b">
                 <td class="border p-2">{{ pessoa.id }}</td>
                 <td class="border p-2">{{ pessoa.nome }}</td>
                 <td class="border p-2">{{ pessoa.cpf }}</td>
@@ -56,6 +56,22 @@ const deletePessoa = (id) => {
             </tr>
             </tbody>
         </table>
+        <!-- Controles de Paginação -->
+        <div class="mt-4 flex justify-center">
+                <nav class="inline-flex rounded-md shadow">
+                    <Link 
+                        v-for="(link, index) in pessoas.links" 
+                        :key="index" 
+                        :href="link.url || '#'" 
+                        :class="{
+                            'bg-blue-500 text-white': link.active,
+                            'bg-white text-gray-700': !link.active
+                        }" 
+                        class="px-4 py-2 border rounded-md mx-1"
+                        v-html="link.label"
+                    />
+                </nav>
+            </div>
         </div>
     </Layout>
 </template>

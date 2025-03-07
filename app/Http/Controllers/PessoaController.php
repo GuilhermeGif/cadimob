@@ -13,7 +13,7 @@ class PessoaController extends Controller
        // 📌 LISTAR REGISTROS (READ)
     public function index()
     {
-        $pessoas = Pessoa::all();
+        $pessoas = Pessoa::paginate(10);
         return Inertia::render('Pessoas/Index', compact('pessoas'));
     }
 
