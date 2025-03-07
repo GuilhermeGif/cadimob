@@ -56,7 +56,6 @@ class PessoaController extends Controller
     // 📌 ATUALIZAR REGISTRO (UPDATE)
     public function update(Request $request, Pessoa $pessoa)
     {
-        dd($pessoa);
         $request->validate([
             'nome' => 'required|string|max:255',
             'data_nascimento' => 'required|date',
