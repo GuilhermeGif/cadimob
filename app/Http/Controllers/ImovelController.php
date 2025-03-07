@@ -54,10 +54,11 @@ class ImovelController extends Controller
         ]);
     }
 
-    public function update(Request $request, Imovel $imovel)
+    public function update(Request $request, string $id)
     {
-        dd($imovel);
-        $request->validate([
+        $imovel = Imovel::findOrFail($id);
+
+        $data = $request->validate([
             'tipo' => 'required|string',
             'area_terreno' => 'nullable|numeric',
             'area_edificacao' => 'nullable|numeric',
@@ -68,7 +69,7 @@ class ImovelController extends Controller
             'contribuinte_id' => 'required|exists:pessoas,id',
         ]);
 
-        $imovel->update($request->all( ));
+        $imovel->update($data);
 
         return redirect()->route('imoveis.index')->with('success', 'Imóvel atualizado com sucesso!');
     }

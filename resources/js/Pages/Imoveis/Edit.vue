@@ -25,7 +25,7 @@ const form = useForm({
 
 // Submissão do formulário
 const submitForm = () => {
-    form.put(route("imoveis.update", props.imovel.id), {
+    form.put(route("imoveis.update", {id: props.imovel.id}), {
         onError: (errors) => {
             errorMessage.value = "Erro ao atualizar o registro."
         },
