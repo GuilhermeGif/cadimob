@@ -1,34 +1,33 @@
-<script setup lang="ts">
+<script setup>
 import { useForm } from "@inertiajs/vue3";
-import { ref } from "vue";
-
-interface Contribuinte {
-    id: number;
-    nome: string;
-}
+import { ref, computed } from "vue";
 
 // Propriedades recebidas do backend
-const props = defineProps<{
-    contribuintes: Contribuinte[];
-}>();
+const props = defineProps({
+    contribuintes: Array,
+});
 
-// Formulário de cadastro
+// Formulário vazio para criação de imóvel
 const form = useForm({
-    tipo: "Terreno",
+    tipo: "",
     logradouro: "",
-    numero: null,
+    numero: "",
     bairro: "",
     complemento: "",
     area_terreno: null,
     area_edificacao: null,
-    contribuinte_id: "",
+    contribuinte_id: null,
 });
 
 // Submissão do formulário
 const submitForm = () => {
-    form.post("/imoveis", {
-        onSuccess: () => alert("Imóvel cadastrado com sucesso!"),
-        onError: (errors) => (form.errors = errors),
+    form.post(route("imoveis.store"), {
+        onError: (errors) => {
+            errorMessage.value = "Erro ao cadastrar o imóvel.";
+        },
+        onSuccess: () => {
+            errorMessage.value = "";
+        },
     });
 };
 
@@ -36,83 +35,113 @@ const submitForm = () => {
 const voltar = () => {
     window.history.back();
 };
+
+const errorMessage = ref("");
 </script>
 
 <template>
-    <div class="max-w-3xl mx-auto mt-10 bg-white p-6 rounded-lg shadow-md">
-        <h1 class="text-2xl font-bold mb-4">Cadastrar Imóvel</h1>
+    <v-container>
+        <v-card class="pa-6 rounded-xl shadow-md">
+            <v-card-title class="text-h6 font-bold">Cadastrar Imóvel</v-card-title>
+            <v-card-text>
+                <v-form @submit.prevent="submitForm">
+                    <!-- Tipo de Imóvel -->
+                    <v-select 
+                        v-model="form.tipo" 
+                        label="Tipo" 
+                        :items="['Terreno', 'Casa', 'Apartamento']" 
+                        required 
+                        outlined 
+                        dense 
+                        :error-messages="form.errors.tipo"
+                    />
 
-        <form @submit.prevent="submitForm">
-            <!-- Tipo do Imóvel -->
-            <div class="mb-4">
-                <label for="tipo" class="block font-medium">Tipo</label>
-                <select v-model="form.tipo" id="tipo" class="input">
-                    <option value="Terreno">Terreno</option>
-                    <option value="Casa">Casa</option>
-                    <option value="Apartamento">Apartamento</option>
-                </select>
-                <p v-if="form.errors.tipo" class="text-red-500 text-sm">{{ form.errors.tipo }}</p>
-            </div>
+                    <!-- Logradouro -->
+                    <v-text-field 
+                        v-model="form.logradouro" 
+                        label="Logradouro" 
+                        required 
+                        outlined 
+                        dense 
+                        :error-messages="form.errors.logradouro"
+                    />
 
-            <!-- Logradouro -->
-            <div class="mb-4">
-                <label for="logradouro" class="block font-medium">Logradouro</label>
-                <input v-model="form.logradouro" type="text" id="logradouro" class="input" required />
-                <p v-if="form.errors.logradouro" class="text-red-500 text-sm">{{ form.errors.logradouro }}</p>
-            </div>
+                    <!-- Número -->
+                    <v-text-field 
+                        v-model="form.numero" 
+                        label="Número" 
+                        required 
+                        outlined 
+                        dense 
+                        :error-messages="form.errors.numero"
+                    />
 
-            <!-- Número -->
-            <div class="mb-4">
-                <label for="numero" class="block font-medium">Número</label>
-                <input type="number" v-model="form.numero" id="numero" class="input" required />
-                <p v-if="form.errors.numero" class="text-red-500 text-sm">{{ form.errors.numero }}</p>
-            </div>
+                    <!-- Bairro -->
+                    <v-text-field 
+                        v-model="form.bairro" 
+                        label="Bairro" 
+                        required 
+                        outlined 
+                        dense 
+                        :error-messages="form.errors.bairro"
+                    />
 
-            <!-- Bairro -->
-            <div class="mb-4">
-                <label for="bairro" class="block font-medium">Bairro</label>
-                <input type="text" v-model="form.bairro" id="bairro" class="input" required />
-                <p v-if="form.errors.bairro" class="text-red-500 text-sm">{{ form.errors.bairro }}</p>
-            </div>
+                    <!-- Complemento -->
+                    <v-text-field 
+                        v-model="form.complemento" 
+                        label="Complemento" 
+                        outlined 
+                        dense 
+                        :error-messages="form.errors.complemento"
+                    />
 
-            <!-- Complemento -->
-            <div class="mb-4">
-                <label for="complemento" class="block font-medium">Complemento</label>
-                <input type="text" v-model="form.complemento" id="complemento" class="input" />
-            </div>
+                    <!-- Área do Terreno -->
+                    <v-text-field 
+                        v-model="form.area_terreno" 
+                        label="Área do Terreno (m²)" 
+                        type="number" 
+                        outlined 
+                        dense 
+                        :error-messages="form.errors.area_terreno"
+                    />
 
-            <!-- Área do Terreno -->
-            <div class="mb-4">
-                <label for="area_terreno" class="block font-medium">Área do Terreno (m²)</label>
-                <input type="number" v-model="form.area_terreno" id="area_terreno" class="input" step="0.01" />
-            </div>
+                    <!-- Área da Edificação -->
+                    <v-text-field 
+                        v-model="form.area_edificacao" 
+                        label="Área da Edificação (m²)" 
+                        type="number" 
+                        outlined 
+                        dense 
+                        :error-messages="form.errors.area_edificacao"
+                    />
 
-            <!-- Área da Edificação -->
-            <div class="mb-4">
-                <label for="area_edificacao" class="block font-medium">Área da Edificação (m²)</label>
-                <input type="number" v-model="form.area_edificacao" id="area_edificacao" class="input" step="0.01" />
-            </div>
+                    <!-- Contribuinte -->
+                    <v-select
+                        v-model="form.contribuinte_id"
+                        label="Contribuinte"
+                        :items="contribuintes"
+                        item-title="nome"
+                        item-value="id"
+                        required
+                        outlined
+                        dense
+                        :error-messages="form.errors.contribuinte_id"
+                    />
 
-            <!-- Contribuinte -->
-            <div class="mb-4">
-                <label for="contribuinte_id" class="block font-medium">Proprietário (Contribuinte)</label>
-                <select v-model="form.contribuinte_id" id="contribuinte_id" class="input" required>
-                    <option v-for="pessoa in props.contribuintes" :key="pessoa.id" :value="pessoa.id">
-                        {{ pessoa.nome }}
-                    </option>
-                </select>
-                <p v-if="form.errors.contribuinte_id" class="text-red-500 text-sm">{{ form.errors.contribuinte_id }}</p>
-            </div>
+                    <!-- Mensagem de erro -->
+                    <v-alert v-if="errorMessage" type="error" class="mt-2">
+                        {{ errorMessage }}
+                    </v-alert>
 
-            <!-- Botões -->
-            <div class="flex justify-between mt-6">
-                <button type="button" @click="voltar" class="px-4 py-2 bg-red-500 text-white no-underline transition duration-200 ease-in-out hover:bg-red-700 rounded-md mb-4 inline-block">
-                    Cancelar
-                </button>
-                <button type="submit" class="px-6 py-2 bg-green-500 text-white no-underline transition duration-200 ease-in-out hover:bg-green-700 rounded-md mb-4 inline-block">
-                    Cadastrar
-                </button>
-            </div>
-        </form>
-    </div>
+                    <!-- Botões -->
+                    <v-btn :loading="form.processing" color="blue" type="submit" class="mt-4 mr-2">
+                        Salvar
+                    </v-btn>
+                    <v-btn @click="voltar" color="grey" class="mt-4">
+                        Voltar
+                    </v-btn>
+                </v-form>
+            </v-card-text>
+        </v-card>
+    </v-container>
 </template>

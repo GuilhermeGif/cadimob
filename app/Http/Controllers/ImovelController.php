@@ -17,22 +17,61 @@ class ImovelController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'tipo'=> 'required|string',
-            'area_terreno'=> 'nullable|numeric',
-            'area_edificacao'=> 'nullable|numeric',
-            'logradouro'=> 'required|string',
-            'numero'=> 'required|integer',
-            'bairro'=> 'required|string',
-            'complemento'=> 'nullable|string',
-            'contribuinte_id'=> 'required|exists:pessoas,id',
-        ]);
-        
-        Imovel::create($request->all());
+{
+    $request->validate([
+        'tipo' => 'required|in:Terreno,Casa,Apartamento',
+        'area_terreno' => [
+            'nullable',
+            'numeric',
+            'min:0',
+            function ($attribute, $value, $fail) use ($request) {
+                if ($request->tipo === 'Terreno' && $value <= 0) {
+                    $fail('A área do terreno é obrigatória e deve ser maior que zero para terrenos.');
+                }
+                if ($request->tipo === 'Casa' && $value <= 0) {
+                    $fail('A área do terreno é obrigatória e deve ser maior que zero para casas.');
+                }
+            },
+        ],
+        'area_edificacao' => [
+            'nullable',
+            'numeric',
+            'min:0',
+            function ($attribute, $value, $fail) use ($request) {
+                if ($request->tipo === 'Casa' && $value <= 0) {
+                    $fail('A área da edificação é obrigatória e deve ser maior que zero para casas.');
+                }
+                if ($request->tipo === 'Apartamento' && $value <= 0) {
+                    $fail('A área da edificação é obrigatória e deve ser maior que zero para apartamentos.');
+                }
+                if ($request->tipo === 'Terreno' && $value != 0) {
+                    $fail('A área da edificação deve ser zero para terrenos.');
+                }
+            },
+        ],
+        'logradouro' => 'required|string',
+        'numero' => 'required|integer',
+        'bairro' => 'required|string',
+        'complemento' => 'nullable|string',
+        'contribuinte_id' => 'required|exists:pessoas,id',
+    ], [
+        // Mensagens personalizadas
+        'tipo.required' => 'O campo tipo é obrigatório.',
+        'tipo.in' => 'O tipo de imóvel deve ser Terreno, Casa ou Apartamento.',
+        'area_terreno.min' => 'A área do terreno deve ser maior ou igual a zero.',
+        'area_edificacao.min' => 'A área da edificação deve ser maior ou igual a zero.',
+        'logradouro.required' => 'O campo logradouro é obrigatório.',
+        'numero.required' => 'O campo número é obrigatório.',
+        'numero.integer' => 'O campo número deve ser um número inteiro.',
+        'bairro.required' => 'O campo bairro é obrigatório.',
+        'contribuinte_id.required' => 'O campo contribuinte é obrigatório.',
+        'contribuinte_id.exists' => 'O contribuinte selecionado não existe.',
+    ]);
 
-        return redirect()->route('imoveis.index')->with('success','Imóvel cadastrado com sucesso!');
-    }
+    Imovel::create($request->all());
+
+    return redirect()->route('imoveis.index')->with('success', 'Imóvel cadastrado com sucesso!');
+}
 
     public function create()
     {
@@ -54,25 +93,62 @@ class ImovelController extends Controller
         ]);
     }
 
-    public function update(Request $request, string $id)
-    {
-        $imovel = Imovel::findOrFail($id);
+    public function update(Request $request, Imovel $imovel)
+{
+    $request->validate([
+        'tipo' => 'required|in:Terreno,Casa,Apartamento',
+        'area_terreno' => [
+            'nullable',
+            'numeric',
+            'min:0',
+            function ($attribute, $value, $fail) use ($request) {
+                if ($request->tipo === 'Terreno' && $value <= 0) {
+                    $fail('A área do terreno é obrigatória e deve ser maior que zero para terrenos.');
+                }
+                if ($request->tipo === 'Casa' && $value <= 0) {
+                    $fail('A área do terreno é obrigatória e deve ser maior que zero para casas.');
+                }
+            },
+        ],
+        'area_edificacao' => [
+            'nullable',
+            'numeric',
+            'min:0',
+            function ($attribute, $value, $fail) use ($request) {
+                if ($request->tipo === 'Casa' && $value <= 0) {
+                    $fail('A área da edificação é obrigatória e deve ser maior que zero para casas.');
+                }
+                if ($request->tipo === 'Apartamento' && $value <= 0) {
+                    $fail('A área da edificação é obrigatória e deve ser maior que zero para apartamentos.');
+                }
+                if ($request->tipo === 'Terreno' && $value != 0) {
+                    $fail('A área da edificação deve ser zero para terrenos.');
+                }
+            },
+        ],
+        'logradouro' => 'required|string',
+        'numero' => 'required|integer',
+        'bairro' => 'required|string',
+        'complemento' => 'nullable|string',
+        'contribuinte_id' => 'required|exists:pessoas,id',
+    ], [
+        // Mensagens personalizadas
+        'tipo.required' => 'O campo tipo é obrigatório.',
+        'tipo.in' => 'O tipo de imóvel deve ser Terreno, Casa ou Apartamento.',
+        'area_terreno.min' => 'A área do terreno deve ser maior ou igual a zero.',
+        'area_edificacao.min' => 'A área da edificação deve ser maior ou igual a zero.',
+        'logradouro.required' => 'O campo logradouro é obrigatório.',
+        'numero.required' => 'O campo número é obrigatório.',
+        'numero.integer' => 'O campo número deve ser um número inteiro.',
+        'bairro.required' => 'O campo bairro é obrigatório.',
+        'contribuinte_id.required' => 'O campo contribuinte é obrigatório.',
+        'contribuinte_id.exists' => 'O contribuinte selecionado não existe.',
+    ]);
 
-        $data = $request->validate([
-            'tipo' => 'required|string',
-            'area_terreno' => 'nullable|numeric',
-            'area_edificacao' => 'nullable|numeric',
-            'logradouro' => 'required|string',
-            'numero' => 'required|integer',
-            'bairro' => 'required|string',
-            'complemento' => 'nullable|string',
-            'contribuinte_id' => 'required|exists:pessoas,id',
-        ]);
+    $imovel->update($request->all());
 
-        $imovel->update($data);
-
-        return redirect()->route('imoveis.index')->with('success', 'Imóvel atualizado com sucesso!');
-    }
+    return redirect()->route('imoveis.index')->with('success', 'Imóvel atualizado com sucesso!');
+}
 
     public function destroy($id)
     {

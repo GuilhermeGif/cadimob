@@ -25,13 +25,13 @@ const form = useForm({
 
 // Submissão do formulário
 const submitForm = () => {
-    form.put(route("imoveis.update", {id: props.imovel.id}), {
+    form.put(route("imoveis.update", { id: props.imovel.id }), {
         onError: (errors) => {
-            errorMessage.value = "Erro ao atualizar o registro."
+            errorMessage.value = "Erro ao atualizar o registro.";
         },
         onSuccess: () => {
             errorMessage.value = "";
-        }
+        },
     });
 };
 
@@ -50,6 +50,7 @@ const errorMessage = ref("");
             <v-card-text>
                 <template v-if="imovel">
                     <v-form @submit.prevent="submitForm">
+                        <!-- Tipo de Imóvel -->
                         <v-select 
                             v-model="form.tipo" 
                             label="Tipo" 
@@ -59,6 +60,8 @@ const errorMessage = ref("");
                             dense 
                             :error-messages="form.errors.tipo"
                         />
+
+                        <!-- Logradouro -->
                         <v-text-field 
                             v-model="form.logradouro" 
                             label="Logradouro" 
@@ -67,6 +70,8 @@ const errorMessage = ref("");
                             dense 
                             :error-messages="form.errors.logradouro"
                         />
+
+                        <!-- Número -->
                         <v-text-field 
                             v-model="form.numero" 
                             label="Número" 
@@ -75,6 +80,8 @@ const errorMessage = ref("");
                             dense 
                             :error-messages="form.errors.numero"
                         />
+
+                        <!-- Bairro -->
                         <v-text-field 
                             v-model="form.bairro" 
                             label="Bairro" 
@@ -83,6 +90,8 @@ const errorMessage = ref("");
                             dense 
                             :error-messages="form.errors.bairro"
                         />
+
+                        <!-- Complemento -->
                         <v-text-field 
                             v-model="form.complemento" 
                             label="Complemento" 
@@ -90,15 +99,18 @@ const errorMessage = ref("");
                             dense 
                             :error-messages="form.errors.complemento"
                         />
+
+                        <!-- Área do Terreno -->
                         <v-text-field 
                             v-model="form.area_terreno" 
                             label="Área do Terreno (m²)" 
                             type="number" 
-                            required 
                             outlined 
                             dense 
                             :error-messages="form.errors.area_terreno"
                         />
+
+                        <!-- Área da Edificação -->
                         <v-text-field 
                             v-model="form.area_edificacao" 
                             label="Área da Edificação (m²)" 
@@ -107,6 +119,8 @@ const errorMessage = ref("");
                             dense 
                             :error-messages="form.errors.area_edificacao"
                         />
+
+                        <!-- Contribuinte -->
                         <v-select
                             v-model="form.contribuinte_id"
                             label="Contribuinte"
@@ -119,10 +133,12 @@ const errorMessage = ref("");
                             :error-messages="form.errors.contribuinte_id"
                         />
 
+                        <!-- Mensagem de erro -->
                         <v-alert v-if="errorMessage" type="error" class="mt-2">
                             {{ errorMessage }}
                         </v-alert>
-                        
+
+                        <!-- Botões -->
                         <v-btn :loading="form.processing" color="blue" type="submit" class="mt-4 mr-2">
                             Salvar
                         </v-btn>
