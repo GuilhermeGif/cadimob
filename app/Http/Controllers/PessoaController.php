@@ -43,7 +43,6 @@ class PessoaController extends Controller
         'cpf' => [
             'required',
             'string',
-            'size:14',
             'unique:pessoas,cpf',
             function ($attribute, $value, $fail) {
                 if (!validaCPF($value)) {
@@ -55,13 +54,10 @@ class PessoaController extends Controller
         'telefone' => [
             'nullable',
             'string',
-            'regex:/^\(\d{2}\) \d{5}-\d{4}$/',
         ],
         'email' => 'required|email|unique:pessoas,email',
     ], [
         // Mensagens personalizadas
-        'cpf.size' => 'O campo CPF deve ter 14 caracteres.',
-        'telefone.regex' => 'O campo telefone deve estar no formato (99) 99999-9999.',
         'email.unique' => 'O e-mail informado já está em uso.',
         'data_nascimento.required' => 'O campo data de nascimento é obrigatório.',
     ]);
@@ -102,7 +98,6 @@ class PessoaController extends Controller
         'cpf' => [
             'required',
             'string',
-            'size:14',
             'unique:pessoas,cpf,' . $pessoa->id,
             function ($attribute, $value, $fail) {
                 if (!validaCPF($value)) {
@@ -114,13 +109,10 @@ class PessoaController extends Controller
         'telefone' => [
             'nullable',
             'string',
-            'regex:/^\(\d{2}\) \d{5}-\d{4}$/',
         ],
         'email' => 'required|email|unique:pessoas,email,' . $pessoa->id,
     ], [
         // Mensagens personalizadas
-        'cpf.size' => 'O campo CPF deve ter 14 caracteres.',
-        'telefone.regex' => 'O campo telefone deve estar no formato (99) 99999-9999.',
         'email.unique' => 'O e-mail informado já está em uso.',
         'data_nascimento.required' => 'O campo data de nascimento é obrigatório.',
     ]);
