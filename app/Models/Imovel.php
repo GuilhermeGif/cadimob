@@ -21,5 +21,10 @@ class Imovel extends Model
     {
         return $this->belongsTo(Pessoa::class,'contribuinte_id');
     }
+
+    public function documentos()
+    {
+        return $this->hasMany(Documento::class);
+    }
 }
 

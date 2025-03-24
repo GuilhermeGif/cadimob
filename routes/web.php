@@ -3,6 +3,8 @@
 use App\Http\Controllers\ImovelController;
 use App\Http\Controllers\PessoaController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\DocumentoController;
+use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -38,5 +40,15 @@ Route::get('/imoveis/{id}/edit', [ImovelController::class, 'edit'])-> name('imov
 Route::put('/imoveis/{id}', [ImovelController::class, 'update'])->name('imoveis.update');
 Route::delete('/imoveis/{id}', [ImovelController::class, 'delete'])->name('imoveis.delete');
 
+// Rotas para documentos
+Route::post('/imoveis/{id}/documentos', [ImovelController::class, 'documentoStore'])
+    ->middleware([HandlePrecognitiveRequests::class])
+    ->name('documentos.store');
 
+Route::delete('/documentos/{id}', [ImovelController::class, 'documentoDestroy'])
+    ->name('documentos.destroy');
+
+Route::get('/documentos/{id}/download', [ImovelController::class, 'documentoDownload'])
+    ->name('documentos.download');
+    
 require __DIR__.'/auth.php';

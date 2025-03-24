@@ -2,12 +2,13 @@
 import Layout from '@/Layouts/Layout.vue';
 import { useForm } from "@inertiajs/vue3";
 import { ref, computed } from "vue";
-
+import axios from 'axios';
 
 // Propriedades recebidas do backend
 const props = defineProps({
     imovel: Object,
     contribuintes: Array,
+    documentos: Array, 
 });
 
 // Verifica se o imóvel está definido
@@ -35,7 +36,7 @@ const submitForm = () => {
             errorMessage.value = "";
         },
     });
-};
+}
 
 // Voltar para a página anterior
 const voltar = () => {
@@ -43,6 +44,60 @@ const voltar = () => {
 };
 
 const errorMessage = ref("");
+
+// Gerenciamento de documentos
+const documentos = ref(props.documentos || []); // Lista de documentos anexados
+const arquivos = ref([]); // Arquivos selecionados para upload
+
+// Função para lidar com a seleção de arquivos
+const handleFileChange = (event) => {
+    arquivos.value = event.target.files;
+};
+
+// Função para enviar documentos ao backend
+const uploadDocumentos = async () => {
+    try {
+        const formData = new FormData();
+
+        // Adiciona os arquivos ao FormData
+        for (let i = 0; i < arquivos.value.length; i++) {
+            formData.append('documentos[]', arquivos.value[i]);
+        }
+
+        // Envia a requisição
+        const response = await axios.post(`/imoveis/${props.imovel.id}/documentos`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+
+        // Atualiza a lista de documentos
+        documentos.value = response.data.documentos;
+        arquivos.value = []; // Limpa os arquivos selecionados
+        errorMessage.value = "";
+    } catch (error) {
+        console.error(error);
+        errorMessage.value = error.response?.data?.message || "Erro ao enviar documentos.";
+    }
+};
+
+
+// Função para excluir um documento
+const excluirDocumento = async (documentoId) => {
+    try {
+        await axios.delete(`/documentos/${documentoId}`);
+        documentos.value = documentos.value.filter(doc => doc.id !== documentoId); // Remove o documento da lista
+        errorMessage.value = "";
+    } catch (error) {
+        console.error(error);
+        errorMessage.value = error.response?.data?.error || "Erro ao excluir o documento.";
+    }
+};
+
+// Função para baixar um documento
+const baixarDocumento = (documentoId) => {
+    window.location.href = `/documentos/${documentoId}/download`;
+};
 </script>
 
 <template>
@@ -135,6 +190,34 @@ const errorMessage = ref("");
                                 dense
                                 :error-messages="form.errors.contribuinte_id"
                             />
+
+                            <!-- Upload de documentos -->
+                            <div class="mb-4">
+                                <label for="documentos" class="block text-sm font-medium text-gray-700">Anexar Documentos</label>
+                                <input 
+                                    type="file" 
+                                    id="documentos" 
+                                    multiple 
+                                    @change="handleFileChange" 
+                                    accept=".jpg,.jpeg,.png,.pdf" 
+                                    class="border p-2 w-full"
+                                />
+                                <v-btn @click="uploadDocumentos" color="primary" class="mt-2">Enviar Documentos</v-btn>
+                            </div>
+
+                            <!-- Lista de documentos anexados -->
+                            <div v-if="documentos.length > 0" class="mt-4">
+                                <h3 class="text-lg font-semibold mb-2">Documentos Anexados</h3>
+                                <ul>
+                                    <li v-for="documento in documentos" :key="documento.id" class="flex justify-between items-center mb-2">
+                                        <span>{{ documento.nome }}</span>
+                                        <div>
+                                            <v-btn @click="baixarDocumento(documento.id)" color="primary" small class="mr-2">Baixar</v-btn>
+                                            <v-btn @click="excluirDocumento(documento.id)" color="error" small>Excluir</v-btn>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
 
                             <!-- Mensagem de erro -->
                             <v-alert v-if="errorMessage" type="error" class="mt-2">

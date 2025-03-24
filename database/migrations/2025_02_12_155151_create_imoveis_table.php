@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('logradouro');
             $table->integer('numero');
             $table->string('bairro');
-            $table->string('complemento')->nullable;
+            $table->string('complemento')->nullable();
             $table->foreignId('contribuinte_id')->constrained('pessoas');
             $table->enum('situacao', ['Ativo', 'Inativo'])->default('Ativo');
             $table->timestamps();

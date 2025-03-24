@@ -1,27 +1,45 @@
 <script setup>
 import Layout from '@/Layouts/Layout.vue';
-import { useForm } from "@inertiajs/vue3";
+import { useForm, router } from "@inertiajs/vue3";
 import { ref, computed } from "vue";
 
 // Propriedades recebidas do backend
 const props = defineProps({
     contribuintes: Array,
+    documentos: Array,
 });
 
 // Formulário vazio para criação de imóvel
 const form = useForm({
-    tipo: "",
-    logradouro: "",
-    numero: "",
-    bairro: "",
-    complemento: "",
-    area_terreno: null,
-    area_edificacao: null,
-    contribuinte_id: null,
+    tipo: props.imovel?.tipo || "",
+    logradouro: props.imovel?.logradouro || "",
+    numero: props.imovel?.numero || "",
+    bairro: props.imovel?.bairro || "",
+    complemento: props.imovel?.complemento || "",
+    area_terreno: props.imovel?.area_terreno || null,
+    area_edificacao: props.imovel?.area_edificacao ?? null,
+    contribuinte_id: props.imovel?.contribuinte_id || null,
+    situacao: props.imovel?.situacao || "Ativo",
+    documentos: [],
 });
 
 // Submissão do formulário
 const submitForm = () => {
+
+    form.area_edificacao = Number(form.area_edificacao);
+    form.area_terreno = Number(form.area_terreno);
+
+    console.log(form);
+
+    form.post(route("imoveis.store"), {
+        onError: (errors) => {
+            errorMessage.value = "Erro ao cadastrar o imóvel.";
+        },
+        onSuccess: () => {
+            errorMessage.value = "";
+        },
+    });
+
     form.post(route("imoveis.store"), {
         onError: (errors) => {
             errorMessage.value = "Erro ao cadastrar o imóvel.";
@@ -38,6 +56,42 @@ const voltar = () => {
 };
 
 const errorMessage = ref("");
+
+const documentos = ref([]); // Lista de documentos anexados
+const arquivos = ref([]); // Arquivos selecionados para upload
+
+const handleFileChange = (event) => {
+    documentos.value = event.target.files;
+};
+
+const uploadDocumentos = async () => {
+    const formData = new FormData();
+    for (let i = 0; i < documentos.value.length; i++) {
+        formData.append('documentos[]', documentos.value[i]);
+    }
+
+    await axios.post(`/imoveis/${props.imovel.id}/documentos`, formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    }).then(response => {
+        documentos.value = response.data.documentos; // Atualiza a lista de documentos
+    }).catch(error => {
+        console.error(error);
+    });
+};
+
+const excluirDocumento = (documentoId) => {
+    axios.delete(`/documentos/${documentoId}`).then(() => {
+        documentos.value = documentos.value.filter(doc => doc.id !== documentoId); // Remove o documento da lista
+    });
+};
+
+const baixarDocumento = (documentoId) => {
+    window.location.href = `/documentos/${documentoId}/download`;
+};
+
+
 </script>
 
 <template>
@@ -129,6 +183,34 @@ const errorMessage = ref("");
                             dense
                             :error-messages="form.errors.contribuinte_id"
                         />
+
+                        <!-- Upload de documentos -->
+                        <div class="mb-4">
+                            <label for="documentos" class="block text-sm font-medium text-gray-700">Documentos</label>
+                            <input 
+                                type="file" 
+                                id="documentos" 
+                                multiple 
+                                @change="handleFileChange" 
+                                accept=".jpg,.jpeg,.png,.pdf" 
+                                class="border p-2 w-full"
+                            />
+                            <span v-if="form.errors.documentos" class="text-red-500 text-sm">{{ form.errors.documentos }}</span>
+                        </div>
+
+                        <!-- Lista de documentos anexados -->
+                        <div v-if="documentos.length > 0" class="mt-4">
+                            <h3 class="text-lg font-semibold mb-2">Documentos Anexados</h3>
+                            <ul>
+                                <li v-for="documento in documentos" :key="documento.id" class="flex justify-between items-center mb-2">
+                                    <span>{{ documento.nome }}</span>
+                                    <div>
+                                        <v-btn @click="baixarDocumento(documento.id)" color="primary" small class="mr-2">Baixar</v-btn>
+                                        <v-btn @click="excluirDocumento(documento.id)" color="error" small>Excluir</v-btn>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
 
                         <!-- Mensagem de erro -->
                         <v-alert v-if="errorMessage" type="error" class="mt-2">
