@@ -55,7 +55,7 @@ class PessoaController extends Controller
             'nullable',
             'string',
         ],
-        'email' => 'required|email|unique:pessoas,email',
+        'email' => 'required|email|unique:pessoas.email',
     ], [
         // Mensagens personalizadas
         'email.unique' => 'O e-mail informado já está em uso.',

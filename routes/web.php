@@ -51,4 +51,19 @@ Route::delete('/documentos/{id}', [ImovelController::class, 'documentoDestroy'])
 Route::get('/documentos/{id}/download', [ImovelController::class, 'documentoDownload'])
     ->name('documentos.download');
     
+
+    // Rotas para os perfis de autorização
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/admin', function () {
+            // Apenas usuários com acesso de administrador
+        })->middleware('can:access-admin');
+    
+        Route::get('/system-admin', function () {
+            // Apenas usuários com acesso de administrador do sistema
+        })->middleware('can:access-system-admin');
+    
+        Route::get('/attendant', function () {
+            // Apenas atendentes
+        })->middleware('can:access-attendant');
+    });
 require __DIR__.'/auth.php';
