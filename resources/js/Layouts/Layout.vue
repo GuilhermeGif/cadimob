@@ -53,6 +53,6 @@ const menuItems = [
     { text: 'Dashboard', icon: 'mdi-view-dashboard', route: '/' },
     { text: 'Pessoas', icon: 'mdi-account-group', route: '/pessoas' },
     { text: 'Imóveis', icon: 'mdi-home-city', route: '/imoveis' },
-    { text: 'Configurações', icon: 'mdi-cog', route: '/configuracoes' },
+    { text: 'Usuarios', icon: 'mdi-cog', route: '/users' },
 ];
 </script>

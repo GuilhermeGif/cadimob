@@ -3,7 +3,9 @@
 use App\Http\Controllers\ImovelController;
 use App\Http\Controllers\PessoaController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AverbacaoController;
 use App\Http\Controllers\DocumentoController;
+use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -22,11 +24,17 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
+    Route::middleware('auth')->group(function () {
+        Route::resource('users', UserController::class);
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    
+        // Rotas para usuários
+        Route::get('/users', [UserController::class, 'index'])->name('users.index')->middleware('can:viewAny,App\Models\User');
+        Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('users.edit')->middleware('can:update,App\Models\User');
+        Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update')->middleware('can:update,App\Models\User');
+    });
 
 Route::resource('pessoas', PessoaController::class)->middleware('auth');
 
@@ -52,6 +60,11 @@ Route::get('/documentos/{id}/download', [ImovelController::class, 'documentoDown
     ->name('documentos.download');
     
 
+// Rotas para averbações
+Route::get('/imoveis/averbacoes/{id}', [AverbacaoController::class, 'create'])->name('averbacao.create');
+Route::post('imoveis/averbacoes/store/', [AverbacaoController::class, 'store'])->middleware(HandlePrecognitiveRequests::class)->name('averbacao.store');
+Route::get('imoveis/averbacoes/{id}', [AverbacaoController::class, 'show'])->name('averbacao.show');
+
     // Rotas para os perfis de autorização
     Route::middleware(['auth'])->group(function () {
         Route::get('/admin', function () {
@@ -66,4 +79,6 @@ Route::get('/documentos/{id}/download', [ImovelController::class, 'documentoDown
             // Apenas atendentes
         })->middleware('can:access-attendant');
     });
+
+
 require __DIR__.'/auth.php';

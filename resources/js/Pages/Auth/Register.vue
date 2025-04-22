@@ -4,6 +4,8 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import { mask } from 'vue-the-mask';
+
 import { Head, Link, useForm } from '@inertiajs/vue3';
 
 const form = useForm({
@@ -11,6 +13,9 @@ const form = useForm({
     email: '',
     password: '',
     password_confirmation: '',
+    profile: '',
+    cpf: '',
+    active: 'S',
 });
 
 const submit = () => {
@@ -18,6 +23,15 @@ const submit = () => {
         onFinish: () => form.reset('password', 'password_confirmation'),
     });
 };
+
+const onlyNumbers = (event) => {
+    const char = String.fromCharCode(event.which);
+    if (!/[0-9]/.test(char)) {
+        event.preventDefault();
+    }
+};
+
+const vMask = mask;
 </script>
 
 <template>
@@ -90,6 +104,57 @@ const submit = () => {
                     class="mt-2"
                     :message="form.errors.password_confirmation"
                 />
+            </div>
+
+            <div class="mt-4">
+                <InputLabel for="cpf" value="CPF" />
+
+                <TextInput
+                    id="cpf"
+                    type="text"
+                    class="mt-1 block w-full"
+                    v-model="form.cpf"
+                    v-mask="'###.###.###-##'"
+                    required
+                    autocomplete="cpf"
+                    @keypress="onlyNumbers"
+                />
+
+                <InputError class="mt-2" :message="form.errors.cpf" />
+            </div>
+
+            <div class="mt-4">
+                <InputLabel for="profile" value="Profile" />
+
+                <select
+                    id="profile"
+                    class="mt-1 block w-full"
+                    v-model="form.profile"
+                    required
+                >
+                    <option value="" disabled>Selecione o perfil</option>
+                    <option value="T">Administrador da TI</option>
+                    <option value="S">Administrador do Sistema</option>
+                    <option value="A">Atendente</option>
+                </select>
+
+                <InputError class="mt-2" :message="form.errors.profile" />
+            </div>
+
+            <div class="mt-4">
+                <InputLabel for="active" value="Ativo" />
+
+                <select
+                    id="ativo"
+                    class="mt-1 block w-full"
+                    v-model="form.active"
+                    required
+                >
+                    <option value="S">Ativo</option>
+                    <option value="N">Desativado</option>
+                </select>
+
+                <InputError class="mt-2" :message="form.errors.active" />
             </div>
 
             <div class="mt-4 flex items-center justify-end">

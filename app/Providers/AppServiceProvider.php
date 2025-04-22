@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\User;
+use App\Policies\UserPolicy;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Gate;
@@ -36,4 +37,7 @@ class AppServiceProvider extends ServiceProvider
             return $user->perfil === 'A'; // Atendente
         });
     }
+    protected $policies = [
+        User::class => UserPolicy::class,
+    ];
 }
