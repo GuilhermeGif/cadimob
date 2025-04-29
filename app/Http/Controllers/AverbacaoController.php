@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreAverbacaoRequest;
 use Illuminate\Http\Request;
 use App\Models\Averbacao;
 use App\Models\Imovel;
@@ -11,44 +12,49 @@ class AverbacaoController extends Controller
 {
     //
     public function index($imovel_id) {
-        $imovel = Imovel::findOrFail($imovel_id);
-        $averbacoes = $imovel->averbacoes;
+        $averbacoes = Averbacao::where('imovel_id', $imovel_id)->get();
 
-        return inertia('Imoveis/Averbacoes/Index', [
-            'imovel' => $imovel,
+        return Inertia::render('Imoveis/Averbacoes/Index', [
             'averbacoes' => $averbacoes,
+            'imovel_id' => $imovel_id,
         ]);
     }
 
     public function create($imovel_id)
     {
-        return inertia('Imoveis/Averbacoes/CriarAverbacao', [
-            'imovelId' => $imovel_id,
+        return inertia('Imoveis/Averbacoes/Create', [
+            'imovel_id' => $imovel_id,
         ]);
     }
 
-    public function store (Request $request, $imovel_id) {
-        $data = $request->validated();
+    public function store (StoreAverbacaoRequest $request) {
+        
+        $data = [
+            'evento' => $request->evento,
+            'medida' => $request->medida,
+            'descricao' => $request->descricao,
+            'data_averbacao' => now(),
+            'imovel_id' => $request->imovel_id,
+        ];
         $imovel = Imovel::where('id', $request->imovel_id)->first();
         $evento = $request->input('evento');
         
-
         // Lógica para os eventos
         switch ($evento) {
             case 'Cancelamento':
-                if ($imovel->situacao == 0) {
+                if ($imovel->situacao == 'Inativo') {
                     return redirect('/imoveis/' . $request->imovel_id)->with('error_message', 'Imóvel já está inativo');
                 } else {
-                    $imovel->situacao = 0;
+                    $imovel->situacao = 'Inativo';
                     $imovel->save();
                 }
                 break;
             
             case 'Reativação':
-                if ($imovel->situacao == 1) {
+                if ($imovel->situacao == 'Ativo') {
                     return redirect('/imoveis/' . $request->imovel_id)->with('error_message', 'Imóvel já está ativo');
                 } else {
-                    $imovel->situacao = 1;
+                    $imovel->situacao = 'Ativo';
                     $imovel->save();
                 }
                 break;
@@ -75,7 +81,8 @@ class AverbacaoController extends Controller
         }
         Averbacao::create($data);
 
-        return redirect()->route('averbacoes.index', $imovel_id)->with('success', 'Averbação criada com sucesso.');
+
+        return redirect()->route('averbacoes.index', $request->imovel_id)->with('success', 'Averbação criada com sucesso.');
     }
     
     public function edit($imovel_id, $id)

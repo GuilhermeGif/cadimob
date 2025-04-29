@@ -24,7 +24,6 @@ class StoreAverbacaoRequest extends FormRequest
         $rules = [
             'evento' => 'required',
             'descricao' => 'required|min:10',
-            'data_averbacao' => 'required',
             'imovel_id' => 'required',
         ];
 

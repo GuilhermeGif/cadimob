@@ -105,6 +105,18 @@ const baixarDocumento = (documentoId) => {
         <v-container>
             <v-card class="pa-6 rounded-xl shadow-md">
                 <v-card-title class="text-h6 font-bold">Editar Imóvel</v-card-title>
+                <v-card-title>
+                    <v-btn
+                    rounded="xs"
+                    color="blue"
+                    size="large"
+                    variant="tonal"
+                    class="me-2"
+                    :href="route('averbacoes.index', props.imovel.id)"
+                    >
+                    Visualizar Averbações
+                    </v-btn>
+                </v-card-title>
                 <v-card-text>
                     <template v-if="imovel">
                         <v-form @submit.prevent="submitForm">
@@ -177,7 +189,7 @@ const baixarDocumento = (documentoId) => {
                                 dense 
                                 :error-messages="form.errors.area_edificacao"
                             />
-
+                            
                             <!-- Contribuinte -->
                             <v-select
                                 v-model="form.contribuinte_id"
@@ -190,6 +202,18 @@ const baixarDocumento = (documentoId) => {
                                 dense
                                 :error-messages="form.errors.contribuinte_id"
                             />
+
+                            <!-- Situação -->
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700">Situação</label>
+                                <div flex items-center>
+                                    <span
+                                        :class="imovel.situacao === 'Ativo' ? 'bg-green-500' : 'bg-red-500'"
+                                        class="w-4 h-4 rounded-full mr-2"
+                                    >O</span>
+                                    <span class="text-sm">{{ imovel.situacao }}</span>
+                                </div>
+                            </div>
 
                             <!-- Upload de documentos -->
                             <div class="mb-4">

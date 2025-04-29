@@ -1,11 +1,38 @@
 <script setup>
 import Layout from '@/Layouts/Layout.vue';
 import { Link, useForm } from "@inertiajs/vue3";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
 // Definição das props
-defineProps({
+const props = defineProps({
     imoveis: Object,
+});
+
+// Variáveis reativas para os filtros
+const inscricaoMunicipal = ref('');
+const tipo = ref('');
+const logradouro = ref('');
+const numero = ref('');
+const bairro = ref('');
+const contribuinte = ref('');
+const situacao = ref('');
+
+// Computed para filtrar os imóveis
+const filteredImoveis = computed(() => {
+    console.log("Filtrando imóveis..."); // Diagnóstico
+    console.log("Dados de imóveis:", props.imoveis.data); // Verifique os dados
+
+    return props.imoveis.data.filter(imovel => {
+        return (
+            (inscricaoMunicipal.value === '' || imovel.id.toString().includes(inscricaoMunicipal.value)) &&
+            (tipo.value === '' || imovel.tipo.toLowerCase().includes(tipo.value.toLowerCase())) &&
+            (logradouro.value === '' || imovel.logradouro.toLowerCase().includes(logradouro.value.toLowerCase())) &&
+            (numero.value === '' || (imovel.numero && imovel.numero.toString().includes(numero.value))) &&
+            (bairro.value === '' || imovel.bairro.toLowerCase().includes(bairro.value.toLowerCase())) &&
+            (contribuinte.value === '' || (imovel.contribuinte && imovel.contribuinte.nome.toLowerCase().includes(contribuinte.value.toLowerCase()))) &&
+            (situacao.value === '' || (imovel.situacao && imovel.situacao.toLowerCase().includes(situacao.value.toLowerCase())))
+        );
+    });
 });
 
 // Função para deletar imóvel com feedback visual
@@ -32,6 +59,17 @@ const deleteImovel = (id) => {
                 </Link>
             </div>
 
+            <!-- Formulário de Filtro -->
+            <div class="mb-4">
+                <input v-model="inscricaoMunicipal" type="text" placeholder="Inscrição Municipal" class="border p-2 mr-2" />
+                <input v-model="tipo" type="text" placeholder="Tipo" class="border p-2 mr-2" />
+                <input v-model="logradouro" type="text" placeholder="Logradouro" class="border p-2 mr-2" />
+                <input v-model="numero" type="text" placeholder="Número" class="border p-2 mr-2" />
+                <input v-model="bairro" type="text" placeholder="Bairro" class="border p-2 mr-2" />
+                <input v-model="contribuinte" type="text" placeholder="Contribuinte" class="border p-2 mr-2" />
+                <input v-model="situacao" type="text" placeholder="Situação" class="border p-2" />
+            </div>
+
             <div class="overflow-x-auto">
                 <table class="w-full table-auto border border-gray-300">
                     <thead>
@@ -46,7 +84,7 @@ const deleteImovel = (id) => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="imovel in imoveis.data" :key="imovel.id" class="hover:bg-gray-50">
+                        <tr v-for="imovel in filteredImoveis" :key="imovel.id" class="hover:bg-gray-50">
                             <td class="px-4 py-2 border text-center">{{ imovel.id }}</td>
                             <td class="px-4 py-2 border">{{ imovel.tipo }}</td>
                             <td class="px-4 py-2 border">{{ imovel.logradouro }}</td>

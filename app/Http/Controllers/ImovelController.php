@@ -66,8 +66,8 @@ class ImovelController extends Controller
     public function update(Request $request, Imovel $imovel)
 {
     $imovel = Imovel::findOrFail($request->id);
-
-    $dadosAtualizados = $request->except(['situacao']);
+    
+    $dadosAtualizados = $request->all();
 
     $imovel->update($dadosAtualizados);
 

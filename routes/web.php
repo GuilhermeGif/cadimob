@@ -61,9 +61,12 @@ Route::get('/documentos/{id}/download', [ImovelController::class, 'documentoDown
     
 
 // Rotas para averbações
-Route::get('/imoveis/averbacoes/{id}', [AverbacaoController::class, 'create'])->name('averbacao.create');
-Route::post('imoveis/averbacoes/store/', [AverbacaoController::class, 'store'])->middleware(HandlePrecognitiveRequests::class)->name('averbacao.store');
-Route::get('imoveis/averbacoes/{id}', [AverbacaoController::class, 'show'])->name('averbacao.show');
+Route::get('/imoveis/{imovel_id}/averbacoes', [AverbacaoController::class, 'index'])->name('averbacoes.index');
+Route::get('/imoveis/{imovel_id}/averbacoes/create', [AverbacaoController::class, 'create'])->name('averbacoes.create');
+Route::post('/imoveis/averbacoes', [AverbacaoController::class, 'store'])->name('averbacoes.store');
+Route::get('/imoveis/{imovel_id}/averbacoes/{id}/edit', [AverbacaoController::class, 'edit'])->name('averbacoes.edit');
+Route::put('/imoveis/{imovel_id}/averbacoes/{id}', [AverbacaoController::class, 'update'])->name('averbacoes.update');
+Route::get('/imoveis/{imovel_id}/averbacoes/{id}', [AverbacaoController::class, 'show'])->name('averbacoes.show');
 
     // Rotas para os perfis de autorização
     Route::middleware(['auth'])->group(function () {

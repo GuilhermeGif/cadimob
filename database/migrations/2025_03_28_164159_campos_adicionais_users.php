@@ -13,9 +13,9 @@ return new class extends Migration
     {
         //
         Schema::table('users', function (Blueprint $table) {
-            $table->char('profile', 1)->default('A')->after('password'); // A=Atendente, S=Admin Sistema, T=Admin TI
-            $table->string('cpf', 14)->unique()->after('profile');
-            $table->char('active', 1)->default('S')->after('cpf'); // S=Sim/Ativo, N=Não/Inativo
+            // $table->char('profile', 1)->default('A')->after('password'); // A=Atendente, S=Admin Sistema, T=Admin TI
+            //$table->string('cpf', 14)->unique()->after('profile');
+            //$table->char('active', 1)->default('S')->after('cpf'); // S=Sim/Ativo, N=Não/Inativo
         });
     }
 
