@@ -1,7 +1,7 @@
 <script setup>
 import Layout from '@/Layouts/Layout.vue';
 import { useForm } from "@inertiajs/vue3";
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import axios from 'axios';
 
 // Propriedades recebidas do backend
@@ -49,6 +49,10 @@ const errorMessage = ref("");
 const documentos = ref(props.documentos || []); // Lista de documentos anexados
 const arquivos = ref([]); // Arquivos selecionados para upload
 
+watch(() => props.documentos, (newDocumentos) => {
+    documentos.value = newDocumentos || [];
+});
+
 // Função para lidar com a seleção de arquivos
 const handleFileChange = (event) => {
     arquivos.value = event.target.files;
@@ -80,7 +84,6 @@ const uploadDocumentos = async () => {
         errorMessage.value = error.response?.data?.message || "Erro ao enviar documentos.";
     }
 };
-
 
 // Função para excluir um documento
 const excluirDocumento = async (documentoId) => {
@@ -213,16 +216,22 @@ const baixarDocumento = (documentoId) => {
 
                             <!-- Situação -->
                             <div class="mb-4">
-                                <label class="block text-sm font-medium text-gray-700">Situação</label>
-                                <div flex items-center>
-                                    <span
-                                        :class="imovel.situacao === 'Ativo' ? 'bg-green-500' : 'bg-red-500'"
-                                        class="w-4 h-4 rounded-full mr-2"
-                                    >O</span>
-                                    <span class="text-sm">{{ imovel.situacao }}</span>
-                                </div>
+                            <label class="block text-sm font-medium text-gray-700">Situação</label>
+                            <div class="flex items-center">
+                                <span
+                                :style="{
+                                    display: 'inline-block',
+                                    width: '16px',
+                                    height: '16px',
+                                    borderRadius: '50%',
+                                    backgroundColor: imovel.situacao === 'Ativo' ? '#22c55e' : '#ef4444', // verde ou vermelho
+                                    marginRight: '8px'
+                                }"
+                                ></span>
+                                <!-- Opcionalmente, remova o texto abaixo para mostrar só o ícone -->
+                                <span class="text-sm">{{ imovel.situacao }}</span>
                             </div>
-
+                            </div>
                             <!-- Upload de documentos -->
                             <div class="mb-4">
                                 <label for="documentos" class="block text-sm font-medium text-gray-700">Anexar Documentos</label>
@@ -241,13 +250,29 @@ const baixarDocumento = (documentoId) => {
                             <div v-if="documentos.length > 0" class="mt-4">
                                 <h3 class="text-lg font-semibold mb-2">Documentos Anexados</h3>
                                 <ul>
-                                    <li v-for="documento in documentos" :key="documento.id" class="flex justify-between items-center mb-2">
-                                        <span>{{ documento.nome }}</span>
-                                        <div>
-                                            <v-btn @click="baixarDocumento(documento.id)" color="primary" small class="mr-2">Baixar</v-btn>
-                                            <v-btn @click="excluirDocumento(documento.id)" color="error" small>Excluir</v-btn>
-                                        </div>
-                                    </li>
+                                <li
+                                    v-for="documento in documentos"
+                                    :key="documento.id"
+                                    class="flex items-center justify-between mb-2 border rounded p-2"
+                                >
+                                    <span class="flex-1 mr-4 truncate">{{ documento.nome_arquivo }}</span>
+                                    <div class="flex space-x-2">
+                                    <button
+                                        @click="baixarDocumento(documento.id)"
+                                        class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-1 px-3 rounded"
+                                        type="button"
+                                    >
+                                        Baixar
+                                    </button>
+                                    <button
+                                        @click="excluirDocumento(documento.id)"
+                                        class="bg-red-600 hover:bg-red-700 text-white font-semibold py-1 px-3 rounded"
+                                        type="button"
+                                    >
+                                        Excluir
+                                    </button>
+                                    </div>
+                                </li>
                                 </ul>
                             </div>
 
@@ -257,7 +282,7 @@ const baixarDocumento = (documentoId) => {
                             </v-alert>
 
                             <!-- Botões -->
-                            <v-btn :loading="form.processing" color="blue" type="submit" class="mt-4 mr-2">
+                            <v-btn :loading="form.processing" color="blue" type="submit" class="mt-4 me-2">
                                 Salvar
                             </v-btn>
                             <v-btn @click="voltar" color="grey" class="mt-4">

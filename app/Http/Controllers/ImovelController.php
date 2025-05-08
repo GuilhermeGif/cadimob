@@ -53,13 +53,14 @@ class ImovelController extends Controller
 
     public function edit($id)
     {
-        $imovel = Imovel::with('contribuinte')->findOrFail($id);
+        $imovel = Imovel::with('contribuinte', 'documentos:id,nome_arquivo,caminho_arquivo,imovel_id')->findOrFail($id);
 
         $contribuintes = Pessoa::all(['id', 'nome']);
 
         return Inertia::render('Imoveis/Edit', [
             'imovel' => $imovel,
             'contribuintes' => $contribuintes,
+            'documentos' => $imovel->documentos,
         ]);
     }
 

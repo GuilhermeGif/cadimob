@@ -61,15 +61,15 @@ const deleteImovel = (id) => {
             </div>
 
             <v-btn
-            rounded="xs" 
-                                color="blue"
-                                size="large"
-                                prepend-icon="mdi-file-download-outline"
-                                variant="tonal" 
-                                class="me-2"
-                                :href="route('relatorios.sintetico')" 
-                                target="_blank">
-                                    Emitir Relatório
+                rounded="xs" 
+                color="blue"
+                size="large"
+                prepend-icon="mdi-file-download-outline"
+                variant="tonal" 
+                class="me-2"
+                :href="route('relatorios.sintetico')" 
+                target="_blank">
+                Emitir Relatório
             ></v-btn>
 
             <!-- Formulário de Filtro -->
