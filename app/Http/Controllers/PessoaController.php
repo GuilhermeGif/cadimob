@@ -12,20 +12,20 @@ use Carbon\Carbon;
 class PessoaController extends Controller
 {
     //
-       // 📌 LISTAR REGISTROS (READ)
+       // LISTAR REGISTROS (READ)
     public function index()
     {
         $pessoas = Pessoa::paginate(10);
         return Inertia::render('Pessoas/Index', compact('pessoas'));
     }
 
-    // 📌 FORMULÁRIO DE CRIAÇÃO (CREATE)
+    // FORMULÁRIO DE CRIAÇÃO (CREATE)
     public function create()
     {
         return Inertia::render('Pessoas/Create');
     }
 
-    // 📌 ARMAZENAR NOVO REGISTRO (STORE)
+    // ARMAZENAR NOVO REGISTRO (STORE)
     public function store(Request $request)
 {
     $request->validate([
@@ -55,7 +55,7 @@ class PessoaController extends Controller
             'nullable',
             'string',
         ],
-        'email' => 'required|email|unique:pessoas.email',
+        'email' => 'required|email|unique:pessoas,email',
     ], [
         // Mensagens personalizadas
         'email.unique' => 'O e-mail informado já está em uso.',
@@ -67,20 +67,14 @@ class PessoaController extends Controller
     return redirect()->route('pessoas.index')->with('success', 'Pessoa cadastrada com sucesso!');
 }
 
-    // 📌 MOSTRAR DETALHES DE UMA PESSOA
-    public function show(Pessoa $pessoa)
-    {
-        return Inertia::render('Pessoas/Show', compact('pessoa'));
-    }
-
-    // 📌 FORMULÁRIO DE EDIÇÃO (EDIT)
+    //  FORMULÁRIO DE EDIÇÃO (EDIT)
     public function edit($id)
     {
         $pessoa = Pessoa::findOrFail($id);
         return Inertia::render('Pessoas/Edit', ['pessoa' => $pessoa]);
     }
 
-    // 📌 ATUALIZAR REGISTRO (UPDATE)
+    //  ATUALIZAR REGISTRO (UPDATE)
     public function update(Request $request, Pessoa $pessoa)
 {
     $request->validate([
@@ -98,7 +92,6 @@ class PessoaController extends Controller
         'cpf' => [
             'required',
             'string',
-            'unique:pessoas,cpf,' . $pessoa->id,
             function ($attribute, $value, $fail) {
                 if (!validaCPF($value)) {
                     $fail('O CPF informado é inválido.');
@@ -110,10 +103,12 @@ class PessoaController extends Controller
             'nullable',
             'string',
         ],
-        'email' => 'required|email|unique:pessoas,email,' . $pessoa->id,
+        'email' => [
+            'required',
+            'email',
+        ]
     ], [
         // Mensagens personalizadas
-        'email.unique' => 'O e-mail informado já está em uso.',
         'data_nascimento.required' => 'O campo data de nascimento é obrigatório.',
     ]);
 
@@ -122,7 +117,7 @@ class PessoaController extends Controller
     return redirect()->route('pessoas.index')->with('success', 'Pessoa atualizada com sucesso!');
 }
 
-    // 📌 EXCLUIR REGISTRO (DELETE)
+    // EXCLUIR REGISTRO (DELETE)
     public function destroy($id)
     {
         $pessoa = Pessoa::findOrFail($id);

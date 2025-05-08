@@ -36,7 +36,7 @@ const submitForm = () => {
             errorMessage.value = "Erro ao cadastrar o imóvel.";
         },
         onSuccess: () => {
-            errorMessage.value = "";
+            errorMessage.value = "Imóvel cadastrado com sucesso!";
         },
     });
 

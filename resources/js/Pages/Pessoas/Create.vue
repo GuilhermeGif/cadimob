@@ -52,10 +52,13 @@ const submit = () => {
         ...data,
         cpf: data.cpf.replace(/\D/g, ''), // Remove formatação do CPF
         telefone: data.telefone.replace(/\D/g, ''), // Remove formatação do Telefone
-    })).post('/pessoas', {
+    })).post(route('pessoas.store'), {
         onError: (errors) => {
-            console.log(errors);
+            alert(Object.values(errors).join(', '));
         },
+        onSuccess: () => {
+            alert("Registro criado com sucesso!");
+        }
     });
 };
 </script>

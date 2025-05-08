@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class Imovel extends Model
+class Imovel extends Model implements Auditable
 {
     use HasFactory;
+    use \OwenIt\Auditing\Auditable;
 
     protected $connection = 'mysql';
     protected $table = "imoveis";
@@ -20,6 +22,11 @@ class Imovel extends Model
     public function contribuinte()
     {
         return $this->belongsTo(Pessoa::class,'contribuinte_id');
+    }
+
+    public function averbacoes()
+    {
+        return $this->hasMany(Averbacao::class);
     }
 
     public function documentos()

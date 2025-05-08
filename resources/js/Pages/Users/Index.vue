@@ -3,6 +3,9 @@
         <div class="p-6 bg-white rounded-lg shadow-md">
             <div class="flex justify-between items-center mb-4">
                 <h1 class="text-2xl font-bold">Lista de Usuários</h1>
+                <Link v-bind:href="route('register')" class="bg-green-500 text-white px-4 py-2 no-underline transition duration-200 ease-in-out hover:bg-green-700 rounded-md mb-4 inline-block">
+                    + Registrar Usuário
+                </Link>
             </div>
         
             <table class="w-full border-collapse mt-4">

@@ -8,7 +8,7 @@
                     <input
                         type="text"
                         id="name"
-                        v-model="user.name"
+                        v-model="form.name"
                         class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-500"
                         required
                     />
@@ -19,7 +19,7 @@
                     <input
                         type="email"
                         id="email"
-                        v-model="user.email"
+                        v-model="form.email"
                         class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-500"
                         required
                         readonly
@@ -31,7 +31,7 @@
                     <input
                         type="text"
                         id="cpf"
-                        v-model="user.cpf"
+                        v-model="form.cpf"
                         class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-500"
                         required
                         readonly
@@ -42,7 +42,7 @@
                     <label for="profile" class="block text-sm font-medium text-gray-700">Perfil</label>
                     <select
                         id="profile"
-                        v-model="user.profile"
+                        v-model="form.profile"
                         class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-500"
                         required
                     >
@@ -56,7 +56,7 @@
                     <label for="active" class="block text-sm font-medium text-gray-700">Ativo</label>
                     <select
                         id="active"
-                        v-model="user.active"
+                        v-model="form.active"
                         class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-500"
                         required
                     >
@@ -97,7 +97,7 @@ const form = useForm({
 });
 
 const updateUser  = () => {
-    form.put(`/users/${props.user.id}`, {
+    form.put(route('users.update', { id: props.user.id }), {
         onSuccess: () => {
             alert('Usuário atualizado com sucesso!');
         },

@@ -12,6 +12,14 @@ const cpf = ref('');
 const dataNascimento = ref('');
 const sexo = ref('');
 
+// Função para formatar o CPF
+const formatCPF = (cpf) => {
+    return cpf.replace(/(\d{3})(\d)/, '$1.$2')
+                .replace(/(\d{3})(\d)/, '$1.$2')
+                .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+};
+
+
 // Função para formatar a data
 const formatDate = (date) => new Date(date).toLocaleDateString('pt-BR');
 
@@ -89,7 +97,7 @@ const deletePessoa = (id) => {
                     <tr v-for="pessoa in filteredPessoas" :key="pessoa.id" class="border-b">
                         <td class="border p-2">{{ pessoa.id }}</td>
                         <td class="border p-2">{{ pessoa.nome }}</td>
-                        <td class="border p-2">{{ pessoa.cpf }}</td>
+                        <td class="border p-2">{{ formatCPF(pessoa.cpf) }}</td>
                         <td class="border p-2">{{ formatDate(pessoa.data_nascimento) }}</td>
                         <td class="border p-2">{{ pessoa.sexo }}</td>
                         <td class="border p-2 flex gap-2 justify-center">

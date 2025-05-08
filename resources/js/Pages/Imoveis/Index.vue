@@ -1,6 +1,6 @@
 <script setup>
 import Layout from '@/Layouts/Layout.vue';
-import { Link, useForm } from "@inertiajs/vue3";
+import { Link, router } from "@inertiajs/vue3";
 import { ref, computed } from "vue";
 
 // Definição das props
@@ -38,7 +38,8 @@ const filteredImoveis = computed(() => {
 // Função para deletar imóvel com feedback visual
 const deleteImovel = (id) => {
     if (confirm("Tem certeza que deseja excluir este imóvel?")) {
-        useForm().delete(`/imoveis/${id}`, {
+        router.delete(route('imoveis.destroy', id), {
+            preserveScroll: true,
             onSuccess: () => alert("Imóvel excluído com sucesso!"),
             onError: (errors) => alert("Erro ao excluir o imóvel."),
         });
@@ -58,6 +59,18 @@ const deleteImovel = (id) => {
                     + Cadastrar Imóvel
                 </Link>
             </div>
+
+            <v-btn
+            rounded="xs" 
+                                color="blue"
+                                size="large"
+                                prepend-icon="mdi-file-download-outline"
+                                variant="tonal" 
+                                class="me-2"
+                                :href="route('relatorios.sintetico')" 
+                                target="_blank">
+                                    Emitir Relatório
+            ></v-btn>
 
             <!-- Formulário de Filtro -->
             <div class="mb-4">

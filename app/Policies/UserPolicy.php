@@ -41,6 +41,21 @@ class UserPolicy
     return $user->profile === 'T';
     }
 
+
+    public function registerUser(User $user)
+    {
+        switch($user->profile) {
+            case 'T':
+                return true;
+            case 'S':
+                return true;
+            case 'A':
+                return false;
+            default:
+                break;
+        }
+    }
+
     public function accessAudit(User $user) 
     {
         return $user->profile === 'T';

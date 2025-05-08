@@ -27,13 +27,12 @@ class UserController extends Controller
         return Inertia::render('Users/Show', compact('user'));
     }
 
-    public function edit($id)
+    public function edit(User $user)
     {
-        $user = User::findOrFail($id);
         return Inertia::render('Users/Edit', ['user' => $user]);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, User $user)
     {
         
         // Validação dos dados recebidos
@@ -45,8 +44,8 @@ class UserController extends Controller
         'active' => 'required|string',
     ]);
 
-    // Encontrar o usuário pelo ID
-    $user = User::findOrFail($id);
+    // Verifica se o usuário pode alterar o modelo
+    $this->authorize('update', $user);
 
     // Atualizar os dados do usuário
     $user->update($validatedData);

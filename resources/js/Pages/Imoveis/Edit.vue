@@ -116,6 +116,14 @@ const baixarDocumento = (documentoId) => {
                     >
                     Visualizar Averbações
                     </v-btn>
+                    <v-btn
+                    rounded="xs"
+                    color="blue"
+                    size="large"
+                    variant="tonal"
+                    class="me-2"
+                    :href="route('relatorios.individual', props.imovel.id)"
+                    >Relatório Individual</v-btn>
                 </v-card-title>
                 <v-card-text>
                     <template v-if="imovel">
