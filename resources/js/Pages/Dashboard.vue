@@ -22,7 +22,7 @@ import { Head } from '@inertiajs/vue3';
                     class="overflow-hidden bg-white shadow-sm sm:rounded-lg"
                 >
                     <div class="p-6 text-gray-900">
-                        Bem vindo ao Dashboard!
+                        Bem vindo ao Cadastro Imobiliário!
                     </div>
                 </div>
             </div>
