@@ -21,28 +21,22 @@ const formatCPF = (cpf) => {
 
 
 // Função para formatar a data
-const formatDate = (date) => new Date(date).toLocaleDateString('pt-BR');
-
-// Função para normalizar a data de entrada
-const normalizeDate = (dateString) => {
-    const date = new Date(dateString);
-    // Verifica se a data é válida
-    if (isNaN(date.getTime())) {
-        return ''; // Retorna uma string vazia se a data não for válida
-    }
-    return date.toISOString().split('T')[0]; // Retorna a data no formato YYYY-MM-DD
-};
+const formatDate = (date) => {
+    if (!date) return ''; 
+    const year = date.slice(0, 4);
+    const month = date.slice(5, 7);
+    const day = date.slice(8, 10);
+    return `${day}/${month}/${year}`;
+}
 
 // Computed para filtrar as pessoas
 const filteredPessoas = computed(() => {
     return props.pessoas.data.filter(pessoa => {
-        const pessoaDataNascimento = normalizeDate(pessoa.data_nascimento); // Normaliza a data do registro
-        const inputDataNascimento = normalizeDate(dataNascimento.value); // Normaliza a data de entrada
 
         return (
             (nome.value === '' || pessoa.nome.toLowerCase().includes(nome.value.toLowerCase())) &&
             (cpf.value === '' || pessoa.cpf.includes(cpf.value)) &&
-            (dataNascimento.value === '' || pessoaDataNascimento === inputDataNascimento) && // Comparação normalizada
+            (dataNascimento.value === '' || pessoa.data_nascimento.includes(dataNascimento.value)) && // 
             (sexo.value === '' || pessoa.sexo.toLowerCase() === sexo.value.toLowerCase())
         );
     });
